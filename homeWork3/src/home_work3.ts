@@ -1,5 +1,4 @@
-// У вас є сутність - Компанія, яка має назву, список департаментів, список попередньо найнятого персоналу,
-// а також список усього персоналу компанії - співробітники всіх департаментів і попередньо найняті.
+
 
 const BUDGET_ZERO_VALUE = 0;
 
@@ -9,19 +8,47 @@ enum AreaEnum {
   HR = 'HR',
 }
 
-//TODO What is it?
+enum StatusEnum {
+  ACTIVE = 'Active',
+  INACTIVE = 'InActive',
+  PENDING = 'Pending',
+}
+
 
 type Budget = {
   debit: number;
   credit: number;
 };
 
+type PaymentInfo = {
+  iban: string;
+  swift: number;
+};
+
+// У вас є сутність - Компанія, яка має назву, список департаментів, список попередньо найнятого персоналу,
+// а також список усього персоналу компанії - співробітники всіх департаментів і попередньо найняті.
 class Company {
-  name: string = 'home';
+  name: string = 'HomeCompany';
   department: Department[] = [];
   preHireEmployees: PreHideEmployees[] = [];
-  staff: (PreHideEmployees | Employee)[] = [];
+  _staff: (PreHideEmployees | Employee)[] = [];
+
+
+  get staff(): (PreHideEmployees | Employee)[] {
+    //flatMap - delete matrix on one level to up
+    return [...this.department.flatMap(x => x.employees), ...this.preHireEmployees] //why used spred?
+  }
+
+  addDepartment(depart: Department) {
+    this.department.push(depart)
+  }
+
+  addPreHideEmployees(preHireEmployees: PreHideEmployees) {
+    this.preHireEmployees.push(preHireEmployees)
+  }
+
 }
+
 
 // Сутність Департамент - має назву, доменну область, список своїх співробітників і бюджет, що складається з дебіту і кредиту.
 // Так само у неї існують методи для обчислення балансу виходячи з поточного бюджету, додавання нових співробітників,
@@ -41,50 +68,75 @@ class Department {
     return this.budget.debit - this.budget.credit;
   }
 
-  addEmployee(): void { }
-  removeEmployee(): void { }
-
   constructor(name: string, area: AreaEnum) {
     this.name = name;
     this.area = area;
   }
-}
 
+  //где поиск работника в другом департаменте?
+  // addEmployee(newcomer: Employee | PreHideEmployees, paymentInfo: PaymentInfo): void {
+  addEmployee(newcomer: Employee | PreHideEmployees): void {
+    if (newcomer instanceof Employee) {
+      newcomer.department = this
+      this.employees.push(newcomer)
+    }
+
+    else {
+      const employee = new Employee(newcomer.firsName, newcomer.lastName, newcomer.salary, newcomer.paymentInfo)
+      employee.department = this
+      this.employees.push(employee)
+    }
+
+    this.budget.credit -= newcomer.salary
+
+  }
+
+  removeEmployee(newcomer: any): void {
+    // debugger
+
+    if (newcomer) {
+      const index = this.employees.indexOf(newcomer)
+      this.employees.splice(index, 1)
+    }
+  }
+}
 // Сутність Попередньо найнятого співробітника має ім'я, прізвище та номер банківського рахунку.
 
 class PreHideEmployees {
-  firsName: string;
+  firstName: string;
   lastName: string;
+  paymentInfo: PaymentInfo;
   salary: number;
-  bankAccount: string;
 
-  constructor(firsName: string, lastName: string, bankAccount: string, salary: number) {
-    this.firsName = firsName;
-    this.lastName = lastName;
-    this.salary = salary;
-    this.bankAccount = bankAccount;
-  }
-}
 
-// Сутність Співробітника - ім'я, прізвище, платіжну інформацію, зарплату, статус (активний, неактивний, у неоплачуваній відпустці) і знання про департамент,
-// до якого він прикріплений.
-
-class Employee {
-  firsName: string;
-  lastName: string;
-  paymentInfo: { iban: string; swift: number };
-  salary: number;
-  status: string;
-  department: Department;
-
-  setStatus(): void { }
-
-  constructor(firsName: string, lastName: string, paymentInfo: { iban: string; swift: number }, salary: number, status: string) {
-    this.firsName = firsName;
+  constructor(firstName: string, lastName: string, salary: number, paymentInfo: PaymentInfo) {
+    this.firstName = firstName;
     this.lastName = lastName;
     this.paymentInfo = paymentInfo;
     this.salary = salary;
-    this.status = status;
+  }
+}
+
+// Сутність Співробітника - ім'я, прізвище, платіжну інформацію, зарплату, статус (активний, неактивний, у неоплачуваній відпустці) 
+// і знання про департамент,
+// до якого він прикріплений.
+
+class Employee {
+  // Not necessary (не обязательно) set type to status, when it assigned (присваивается) value from enum
+  status = StatusEnum.PENDING;
+  department: Department | null = null;
+  firstName: string;
+  lastName: string;
+  salary: number;
+  paymentInfo: PaymentInfo;
+
+  setStatus(): void { }
+
+  constructor(firstName: string, lastName: string, salary: number, paymentInfo: PaymentInfo) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.salary = salary;
+    this.paymentInfo = paymentInfo;
   }
 }
 
@@ -93,14 +145,93 @@ class Employee {
 // Попередньо найняті співробітники отримують зарплату за допомогою зовнішніх оплат, Співробітники (тільки активні) - за допомогою внутрішніх.
 
 class Accounting extends Department {
-  balance: any;
 
-  addPersonalToBalance(): void { }
-  removePersonalFromBalance(): void { }
-  salaryPayment(): void { }
+  constructor(name: string, area: AreaEnum) {
+    super(name, area)
+  }
+
+  salaryBalance: (PreHideEmployees | Employee)[] = [];
+
+  addPersonalToBalance(entity: Department | Employee | PreHideEmployees): void {
+    DopFunc.isDepartment(entity) ? this.salaryBalance.push(...entity.employees) : this.salaryBalance.push(entity)
+  }
+
+  removePersonalFromBalance(entity: Employee | PreHideEmployees): void {
+
+  }
+
+  salaryPayment(): void {
+    for (const entity of this.salaryBalance) {
+      if (DopFunc.isPreHireEmployees(entity)) {
+        this.externalPayment(entity)
+      }
+
+      else {
+        if (entity.status !== StatusEnum.ACTIVE) {
+          continue
+        }
+        this.internalPayment(entity);
+      }
+    }
+  }
+
   //inside
-  internalPayment(): void { }
+  internalPayment(employee: Employee): void { }
   //outside
-  externalPayment(): void { }
+  externalPayment(preHireEmployees: PreHideEmployees): void { }
 }
+
+
+class DopFunc {
+  //check out is entity of Employee?
+  static isEmployee(entity: unknown): entity is Employee {
+    //сужение типов
+    return entity instanceof Employee
+  }
+
+  //check out is entity of PreHideEmployees?
+  static isPreHireEmployees(entity: unknown): entity is PreHideEmployees {
+    //сужение типов
+    return entity instanceof PreHideEmployees
+  }
+
+  static isDepartment(entity: unknown): entity is Department {
+    //сужение типов
+    return entity instanceof Department
+  }
+}
+
+
+const HomeCompany = new Company()
+
+const LobovEmlpoyee = new Employee("Лобов", "Евгений", 1000, { iban: "IbanNumber", swift: 12345 })
+const ValyaPreHireEmployee = new PreHideEmployees("Lena", "Lobova", 500, { iban: "IbanNumber", swift: 9876 })
+const DepartmentFront = new Department("Front", AreaEnum.FRONT)
+const DepartmentBack = new Department("Back", AreaEnum.BACK)
+
+DepartmentFront.addEmployee(LobovEmlpoyee)
+DepartmentFront.addEmployee(ValyaPreHireEmployee)
+
+console.log("DepartmentFront ====>", DepartmentFront);
+console.log("LobovEmlpoyee ====>", LobovEmlpoyee);
+console.log("ValyaPreHireEmployee ====>", ValyaPreHireEmployee);
+
+HomeCompany.addDepartment(DepartmentFront)
+HomeCompany.addPreHideEmployees(ValyaPreHireEmployee)
+
+DepartmentBack.addEmployee(LobovEmlpoyee)
+
+console.log("HomeCompany ====>", HomeCompany);
+console.log(DepartmentBack);
+console.log("DepartmentFront before delete", DepartmentFront);
+
+DepartmentFront.removeEmployee(ValyaPreHireEmployee)
+console.log("DepartmentFront after delete", DepartmentFront);
+
+
+
+
+
+
+
 
