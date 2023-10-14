@@ -82,7 +82,7 @@ class Department {
     }
 
     else {
-      const employee = new Employee(newcomer.firsName, newcomer.lastName, newcomer.salary, newcomer.paymentInfo)
+      const employee = new Employee(newcomer.firstName, newcomer.lastName, newcomer.salary, newcomer.paymentInfo)
       employee.department = this
       this.employees.push(employee)
     }
@@ -91,13 +91,15 @@ class Department {
 
   }
 
-  removeEmployee(newcomer: any): void {
+  removeEmployee(employee: Employee): void {
+    // if (employee) {
+    //   const index = this.employees.indexOf(employee)
+    //   this.employees.splice(index, 1)
+    // }
     // debugger
+    this.employees = this.employees.filter(elem => elem !== employee)
+    this.budget.credit += employee.salary
 
-    if (newcomer) {
-      const index = this.employees.indexOf(newcomer)
-      this.employees.splice(index, 1)
-    }
   }
 }
 // Сутність Попередньо найнятого співробітника має ім'я, прізвище та номер банківського рахунку.
@@ -206,11 +208,22 @@ const HomeCompany = new Company()
 
 const LobovEmlpoyee = new Employee("Лобов", "Евгений", 1000, { iban: "IbanNumber", swift: 12345 })
 const ValyaPreHireEmployee = new PreHideEmployees("Lena", "Lobova", 500, { iban: "IbanNumber", swift: 9876 })
+const LenaPreHireEmployee = new PreHideEmployees("Lenok", "Tishenko", 800, { iban: "IbanNumber", swift: 7676 })
+const OlegPreHireEmployee = new PreHideEmployees("Oleg", "Tishenko", 900, { iban: "IbanNumber", swift: 2333 })
+
+
+
+
 const DepartmentFront = new Department("Front", AreaEnum.FRONT)
 const DepartmentBack = new Department("Back", AreaEnum.BACK)
 
 DepartmentFront.addEmployee(LobovEmlpoyee)
 DepartmentFront.addEmployee(ValyaPreHireEmployee)
+DepartmentFront.addEmployee(LenaPreHireEmployee)
+
+DepartmentBack.addEmployee(LobovEmlpoyee)
+DepartmentBack.addEmployee(OlegPreHireEmployee)
+
 
 console.log("DepartmentFront ====>", DepartmentFront);
 console.log("LobovEmlpoyee ====>", LobovEmlpoyee);
@@ -219,13 +232,12 @@ console.log("ValyaPreHireEmployee ====>", ValyaPreHireEmployee);
 HomeCompany.addDepartment(DepartmentFront)
 HomeCompany.addPreHideEmployees(ValyaPreHireEmployee)
 
-DepartmentBack.addEmployee(LobovEmlpoyee)
 
 console.log("HomeCompany ====>", HomeCompany);
 console.log(DepartmentBack);
 console.log("DepartmentFront before delete", DepartmentFront);
 
-DepartmentFront.removeEmployee(ValyaPreHireEmployee)
+DepartmentFront.removeEmployee(LobovEmlpoyee)
 console.log("DepartmentFront after delete", DepartmentFront);
 
 
