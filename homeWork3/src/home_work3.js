@@ -20,6 +20,10 @@ class Company {
     preHireEmployees = [];
     _staff = [];
     get staff() {
+        // const employee = this.department.flatMap(x => x.employees) //why used spred?
+        // const preHireEmployees = this.preHireEmployees;
+        // const res = [...employee, ...preHireEmployees]
+        // return res
         //flatMap - delete matrix on one level to up
         return [...this.department.flatMap(x => x.employees), ...this.preHireEmployees]; //why used spred?
     }
@@ -97,7 +101,9 @@ class Employee {
     lastName;
     salary;
     paymentInfo;
-    setStatus() { }
+    setStatus(status) {
+        this.status = status;
+    }
     constructor(firstName, lastName, salary, paymentInfo) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -118,19 +124,19 @@ class Accounting extends Department {
     }
     removePersonalFromBalance(entity) {
     }
-    salaryPayment() {
-        for (const entity of this.salaryBalance) {
-            if (DopFunc.isPreHireEmployees(entity)) {
-                this.externalPayment(entity);
-            }
-            else {
-                if (entity.status !== StatusEnum.ACTIVE) {
-                    continue;
-                }
-                this.internalPayment(entity);
-            }
-        }
-    }
+    // salaryPayment(): void {
+    //   for (const entity of this.salaryBalance) {
+    //     if (DopFunc.isPreHireEmployees(entity)) {
+    //       this.externalPayment(entity)
+    //     }
+    //     else {
+    //       if (entity.status !== StatusEnum.ACTIVE) {
+    //         continue
+    //       }
+    //       this.internalPayment(entity);
+    //     }
+    //   }
+    // }
     //inside
     internalPayment(employee) { }
     //outside
@@ -171,6 +177,6 @@ HomeCompany.addDepartment(DepartmentFront);
 HomeCompany.addPreHideEmployees(ValyaPreHireEmployee);
 console.log("HomeCompany ====>", HomeCompany);
 console.log(DepartmentBack);
-console.log("DepartmentFront before delete", DepartmentFront);
+console.log("DepartmentFront before delete", DepartmentFront.employees);
 DepartmentFront.removeEmployee(LobovEmlpoyee);
-console.log("DepartmentFront after delete", DepartmentFront);
+console.log("DepartmentFront after delete", DepartmentFront.employees);
