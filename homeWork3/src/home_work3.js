@@ -123,6 +123,12 @@ class Accounting extends Department {
         DopFunc.isDepartment(entity) ? this.salaryBalance.push(...entity.employees) : this.salaryBalance.push(entity);
     }
     removePersonalFromBalance(entity) {
+        if (DopFunc.isEmployee(entity)) {
+            this.salaryBalance = this.salaryBalance.filter(elem => elem !== entity);
+        }
+        else {
+            this.salaryBalance = this.salaryBalance.filter(elem => elem.firstName !== entity.firstName);
+        }
     }
     // salaryPayment(): void {
     //   for (const entity of this.salaryBalance) {
@@ -180,3 +186,10 @@ console.log(DepartmentBack);
 console.log("DepartmentFront before delete", DepartmentFront.employees);
 DepartmentFront.removeEmployee(LobovEmlpoyee);
 console.log("DepartmentFront after delete", DepartmentFront.employees);
+const AccountingGeneral = new Accounting("General", AreaEnum.FRONT);
+AccountingGeneral.addPersonalToBalance(LobovEmlpoyee);
+AccountingGeneral.addPersonalToBalance(DepartmentFront);
+AccountingGeneral.removePersonalFromBalance(LobovEmlpoyee);
+AccountingGeneral.removePersonalFromBalance(ValyaPreHireEmployee);
+console.log(AccountingGeneral);
+console.log(AccountingGeneral.salaryBalance);

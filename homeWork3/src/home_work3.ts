@@ -137,9 +137,9 @@ class Employee {
   salary: number;
   paymentInfo: PaymentInfo;
 
-  setStatus(status:StatusEnum): void {
+  setStatus(status: StatusEnum): void {
     this.status = status
-   }
+  }
 
   constructor(firstName: string, lastName: string, salary: number, paymentInfo: PaymentInfo) {
     this.firstName = firstName;
@@ -166,7 +166,12 @@ class Accounting extends Department {
   }
 
   removePersonalFromBalance(entity: Employee | PreHideEmployees): void {
-
+    if (DopFunc.isEmployee(entity)) {
+      this.salaryBalance = this.salaryBalance.filter(elem => elem !== entity)
+    }
+    else {
+      this.salaryBalance = this.salaryBalance.filter(elem => elem.firstName !== entity.firstName)
+    }
   }
 
   // salaryPayment(): void {
@@ -224,7 +229,7 @@ DepartmentFront.addEmployee(LobovEmlpoyee)
 DepartmentFront.addEmployee(ValyaPreHireEmployee)
 DepartmentFront.addEmployee(LenaPreHireEmployee)
 
-DepartmentBack.addEmployee(LobovEmlpoyee) 
+DepartmentBack.addEmployee(LobovEmlpoyee)
 DepartmentBack.addEmployee(OlegPreHireEmployee)
 
 
@@ -242,6 +247,19 @@ console.log("DepartmentFront before delete", DepartmentFront.employees);
 
 DepartmentFront.removeEmployee(LobovEmlpoyee)
 console.log("DepartmentFront after delete", DepartmentFront.employees);
+
+const AccountingGeneral = new Accounting("General", AreaEnum.FRONT)
+AccountingGeneral.addPersonalToBalance(LobovEmlpoyee)
+AccountingGeneral.addPersonalToBalance(DepartmentFront)
+
+AccountingGeneral.removePersonalFromBalance(LobovEmlpoyee)
+AccountingGeneral.removePersonalFromBalance(ValyaPreHireEmployee)
+
+console.log(AccountingGeneral);
+console.log(AccountingGeneral.salaryBalance);
+
+
+
 
 
 
