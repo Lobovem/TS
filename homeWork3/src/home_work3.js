@@ -130,36 +130,17 @@ class Accounting extends Department {
             this.salaryBalance = this.salaryBalance.filter((elem) => elem.firstName !== entity.firstName);
         }
     }
-    // salaryPayment(): void {
-    //   this.salaryBalance.forEach((element) => {
-    //     if (DopFunc.isPreHireEmployees(element)) {
-    //       this.externalPayment(element);
-    //     }
-    //     // else if (element instanceof Employee) {
-    //     //   if (element.status === StatusEnum.ACTIVE) {
-    //     //     // continue
-    //     //     this.internalPayment(element);
-    //     //   }
-    //     // }
-    //     else if (element instanceof Employee) {
-    //       if (element.status === StatusEnum.ACTIVE) {
-    //         this.internalPayment(element);
-    //       }
-    //     }
-    //   });
-    // }
     salaryPayment() {
-        this.salaryBalance.forEach((element) => {
-            if (DopFunc.isPreHireEmployees(element)) {
-                this.externalPayment(element);
+        for (const entity of this.salaryBalance) {
+            if (DopFunc.isPreHireEmployees(entity))
+                this.externalPayment(entity);
+            else {
+                //Here we use (entity as Employee) for set type TypeScript, that entity is copy of Employee class. 
+                if (entity.status !== StatusEnum.ACTIVE)
+                    continue;
+                this.internalPayment(entity);
             }
-            else if (DopFunc.isEmployee(element)) {
-                //Here we use (element as Employee) for set type TypeScript, that element is copy of Employee class. 
-                if (element.status === StatusEnum.ACTIVE) {
-                    this.internalPayment(element);
-                }
-            }
-        });
+        }
     }
     //inside
     internalPayment(employee) { }
@@ -207,7 +188,7 @@ console.log('DepartmentFront after delete', DepartmentFront.employees);
 const AccountingGeneral = new Accounting('General', AreaEnum.FRONT);
 AccountingGeneral.addPersonalToBalance(LobovEmlpoyee);
 AccountingGeneral.addPersonalToBalance(DepartmentFront);
-// AccountingGeneral.removePersonalFromBalance(LobovEmlpoyee)
-// AccountingGeneral.removePersonalFromBalance(ValyaPreHireEmployee)
+AccountingGeneral.removePersonalFromBalance(LobovEmlpoyee);
+AccountingGeneral.removePersonalFromBalance(ValyaPreHireEmployee);
 console.log(AccountingGeneral);
 console.log(AccountingGeneral.salaryBalance);
