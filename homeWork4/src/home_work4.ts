@@ -3,29 +3,44 @@
 //  залишилися тільки рядки. Використовуйте захисника типу для цього завдання.
 type ParamType = number | string | boolean | object | Function | symbol | undefined;
 
-const arr = ['one', 'two', 'three', 1, 2, true, false, 'four'];
-
 //it is more stick mode
-function isString(elem: ParamType): elem is String {
+function isString(elem: ParamType): elem is string {
   // function isString(elem: unknown): elem is String  {
   return typeof elem === 'string';
 }
 
-function isNumber(elem: ParamType): elem is Number {
+function isNumber(elem: ParamType): elem is number {
   // function isNumber(elem: unknown): elem is Number {
   return typeof elem === 'number';
 }
 
-function sortOnlyString(elem: any[]): any[] {
-  return elem.filter((el) => isString(el));
+function toStringTypeVariable(elem: ParamType): boolean {
+  return isString(elem);
 }
 
+const stringOne = 'Lobov';
+const numer = 123;
+
+console.log(toStringTypeVariable(stringOne));
+console.log(toStringTypeVariable(numer));
+
+const arr: (string | number | boolean)[] = ['one', 'two', 'three', 1, 2, true, false, 'four', 'kira'];
+
+function sortOnlyString(elem: (string | number | boolean)[]): string[] {
+  // let res: string[] = [];
+  // for (const iterator of elem) {
+  //   if (isString(iterator)) res.push(iterator);
+  // }
+  let res: string[] = [];
+  elem.forEach((el) => (isString(el) ? res.push(el) : el));
+  return res;
+}
 const res = sortOnlyString(arr);
-// console.log(res);
+console.log(res);
 
 // У вас є об'єкт, який може містити довільні властивості. Напишіть функцію, яка приймає цей об'єкт і повертає значення однієї з
 // властивостей, якщо воно існує і має певний тип.
-const obj = { color: 'red', numb: 10, name: 'Evgen', count: 1987, bool: true };
+const obj: ParamType = { color: 'red', numb: 10, name: 'Evgen', count: 1987, bool: true };
 
 // function isObjValueStr(objec: any) {
 //   const res = []
@@ -89,8 +104,8 @@ function hasOwnPropertyTypeNumber(object: any): boolean {
   return false;
 }
 
-// console.log(hasOwnProperty(obj, 'Evgen'));
-// console.log(hasOwnPropertyType(obj, 1987));
+console.log(hasOwnProperty(obj, 'Evgen'));
+console.log(hasOwnPropertyType(obj, 1987));
 
 // Потім напишіть функцію, яка використовує цих захисників у комбінації для звуження типу об'єкта до більш конкретного типу.
 
@@ -149,17 +164,60 @@ const sum: Function = function (a: number, b: number): number {
 };
 
 const demo = 123;
-
 function suma(func: ParamType): Function | String {
   if (isFunction(func)) {
-    return func(4, 2);
+    return func(14, 2);
   }
   return 'Is not function';
 }
 
+console.log(suma(sum));
+
 // Створіть класи з ієрархією успадкування і потім напишіть функцію, яка використовує захисник типу для звуження типу об'єктів, що базуються
 // на цій ієрархії.
 
-class Dog {}
+// Створіть класи з ієрархією успадкування і потім напишіть функцію, яка використовує захисник типу для звуження типу об'єктів, що базуються
+// на цій ієрархії.
 
-class Cat {}
+// Створіть класи з ієрархією успадкування і потім напишіть функцію, яка використовує захисник типу для звуження типу об'єктів, що базуються
+// на цій ієрархії.
+
+class Animal {
+  name: string;
+  constructor(name: string) {
+    this.name = name;
+  }
+}
+
+class Dog extends Animal {}
+class Cat extends Animal {}
+
+const dog = new Dog('Dik');
+const cat = new Cat('Milka');
+
+console.log(dog);
+console.log(cat);
+
+function isDog(animal: Dog | Cat): animal is Dog {
+  return animal instanceof Dog;
+}
+
+function isCat(animal: Dog | Cat): animal is Cat {
+  return animal instanceof Cat;
+}
+
+function dogsType(animal: (Dog | Cat)[]): Dog[] {
+  return animal.filter((elem: Dog | Cat) => isDog(elem));
+}
+
+function catsType(animal: (Dog | Cat)[]): Cat[] {
+  return animal.filter((elem: Dog | Cat) => isCat(elem));
+}
+
+const animal: Animal[] = [new Dog('Jack'), new Cat('Kit'), new Dog('Back'), new Cat('Tity')];
+
+const dogs = dogsType(animal);
+const cats = catsType(animal);
+
+console.log(dogs);
+console.log(cats);
