@@ -84,6 +84,8 @@ interface IBookService {
   searchAuthor(authorName: string): IAuthor[];
 }
 
+// interface IWebBooks extends IBook, IAuthor {}
+
 const books: (IBook & IAuthor)[] = [
   { name: 'Bible', relice: 3500, authorName: 'God', bithPlace: 'Sky' },
   { name: 'Holy', relice: 3500, authorName: 'God', bithPlace: 'Sky' },
