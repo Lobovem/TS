@@ -28,6 +28,30 @@ console.log(obj[0]);
 // Створіть інтерфейс з певними властивостями та індексною сигнатурою. Наприклад, ви можете мати властивості
 // типу name: string та індексну сигнатуру для додаткових динамічних властивостей.
 
+interface ICustom {
+  name: string;
+  [key: string]: string | number;
+}
+
 // Створіть два інтерфейси, один з індексною сигнатурою, а інший розширює перший, додаючи специфічні властивості.
+
+interface ICustom2 {
+  [key: string]: string | number;
+}
+interface ISpecial extends ICustom2 {
+  name: string;
+  city: string;
+}
+
+const person: ISpecial = {
+  name: 'Yevhen',
+  city: 'Kharkov',
+  age: 36,
+};
+
 // Напишіть функцію, яка отримує об'єкт з індексною сигнатурою і перевіряє, чи відповідають значення певних ключів
 //  певним критеріям (наприклад, чи всі значення є числами).
+
+function checkIndexType(obj: IObj): boolean {
+  return false;
+}
