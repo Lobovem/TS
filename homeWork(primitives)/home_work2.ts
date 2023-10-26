@@ -211,9 +211,9 @@ class Student {
   _lastName: string;
   _birthYear: number;
   // _grades: Record<string, number> = {};
-  // _grades: Array<{ workName: string; mark: number }> = [];
+  _grades: Array<{ workName: string; mark: number }> = [];
   // _visits: Array<{ lesson: string; present: number }> = []; // lesson: present
-  _grades: any = {};
+  // _grades: any = {};
   _visits: any = []; // lesson: present
 
   get fullName(): string {
@@ -234,20 +234,20 @@ class Student {
     this._birthYear = birthYear;
   }
 
-  // setGrade(workName: string, mark: number): void {
-  //   this._grades.push({ workName, mark });
-  // }
+  setGrade(workName: string, mark: number): void {
+    this._grades.push({ workName, mark });
+  }
 
-  // setVisits(lesson: string, present: number): void {
-  //   this._visits.push({ lesson, present });
-  // }
+  setVisits(lesson: string, present: number): void {
+    this._visits.push({ lesson, present });
+  }
 
   getPerformanceRating(): number {
     const gradeValues = Object.values(this._grades);
 
     if (!gradeValues.length) return 0;
 
-    const averageGrade = gradeValues.reduce((sum: number, grade) => sum + grade, 0) / gradeValues.length;
+    const averageGrade = gradeValues.reduce((sum: number, grade) => sum + grade.mark, 0) / gradeValues.length;
     const attendancePercentage = (this._visits.filter((present) => present).length / this._visits.length) * 100;
 
     return (averageGrade + attendancePercentage) / 2;
