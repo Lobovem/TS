@@ -23,7 +23,7 @@ const obj: IObj = {
   3: '30',
 };
 
-console.log(obj[0]);
+// console.log(obj[0]);
 
 // Створіть інтерфейс з певними властивостями та індексною сигнатурою. Наприклад, ви можете мати властивості
 // типу name: string та індексну сигнатуру для додаткових динамічних властивостей.
@@ -51,7 +51,37 @@ const person: ISpecial = {
 
 // Напишіть функцію, яка отримує об'єкт з індексною сигнатурою і перевіряє, чи відповідають значення певних ключів
 //  певним критеріям (наприклад, чи всі значення є числами).
-
-function checkIndexType(obj: IObj): boolean {
-  return false;
+interface ICustom3 {
+  [key: string]: number | string;
 }
+
+const obj2: ICustom3 = {
+  age: 36,
+  birthday: 1987,
+};
+
+function isTypeNumber(elem: unknown): boolean {
+  return typeof elem === 'number';
+}
+
+function isValuesTypeNumber(obj: ICustom3): boolean {
+  //check out that object has keys. Else obj is empty then return false
+  if (Object.keys(obj).length === 0) {
+    return false;
+  }
+
+  //exemple 1
+  // for (const key in obj) {
+  //   if (obj.hasOwnProperty(key) && !isTypeNumber(obj[key])) {
+  //     return false;
+  //   }
+  // }
+  // return true;
+
+  //exemple 2
+  //Метод every() проверяет, удовлетворяют ли все элементы массива условию, заданному в передаваемой функции.
+  //Object.values(obj), щоб отримати масив усіх значень в об'єкті
+  return Object.values(obj).every(value => isTypeNumber(value));
+}
+
+console.log(isValuesTypeNumber(obj2));
