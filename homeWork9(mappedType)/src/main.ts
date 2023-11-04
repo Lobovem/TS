@@ -34,10 +34,10 @@ const userFirst: DeepReadonly<IUser> = {
 };
 
 if (userFirst.user1) {
-  userFirst.user1.name = '123';
+  // userFirst.user1.name = '123';
 }
 
-userFirst.name = '222';
+// userFirst.name = '222';
 console.log(userFirst);
 
 // Вам потрібно створити тип DeepRequireReadonly який буде робити доступними тільки для читання навіть властивості вкладених обʼєктів
@@ -52,8 +52,8 @@ const userSecond: DeepRequireReadonly<IUser> = {
   user2: { name: 'Mark', surname: 'Kuk' },
 };
 
-userSecond.name = '000';
-userSecond.user1.name = '9999';
+// userSecond.name = '000';
+// userSecond.user1.name = '9999';
 console.log(userSecond);
 
 // Вам потрібно сворити тип UpperCaseKeys, який буде приводити всі ключи до верхнього регістру.
