@@ -85,16 +85,55 @@ interface IUserThird {
   surname: string;
 }
 
-// type ObjectToPropertyDescriptor<T> = {
-//   [K in keyof T]: { value: T[K] };
-// };
-
-const userThird = {
-  name: 'Rec',
-  surname: 'Rec',
+type ObjectToPropertyDescriptor<T> = {
+  [K in keyof T]: PropertyDescriptor;
 };
 
-console.log(Object.getOwnPropertyDescriptor(userThird, 'name'));
+// const userThird: ObjectToPropertyDescriptor<IUserThird> = {
+//   name: {
+//     value: 'Vil',
+//     writable: true,
+//     enumerable: true,
+//     configurable: true,
+//   },
+//   surname: {
+//     value: 'Villy',
+//     writable: true,
+//     enumerable: true,
+//     configurable: true,
+//   },
+// };
+
+const obj: IUserThird = {
+  name: 'Bob',
+  surname: 'AsdBob',
+};
+
+const userThird: ObjectToPropertyDescriptor<typeof obj> = {
+  name: Object.getOwnPropertyDescriptor(obj, 'name')!,
+  surname: Object.getOwnPropertyDescriptor(obj, 'surname')!,
+};
+
+console.log(userThird);
+
+// const userThird: ObjectToPropertyDescriptor<IUserThird> = {
+//   name: { value: '212', writable: false },
+// };
+
+// Object.defineProperty(userThird, 'name', {
+//   value: 'Bob',
+//   writable: faslse,
+// });
+
+// userThird.name = '123';
+
+// Object.defineProperty(userThird, 'name', {
+//   value: 'Bob',
+//   writable: true,
+//   configurable: true,
+// });
+
+// userThird.name.value = '123';
 
 // const obj = {};
 // Object.defineProperty(obj, 'name', {
