@@ -15,9 +15,16 @@ function getSum(a: number, b: number): number {
 type GetNumType = GetReturnType<typeof getSum>;
 let numValue: GetNumType = getSum(10, 2);
 let numValue2: GetNumType = getSum(2, 2);
-console.log(numValue);
 
 // Вам потрібно створити умовний тип, який приймає функціональний тип з одним параметром (або задовільним)
 // та повертає кортеж, де перше значення - це тип, що функція повертає, а другий - тип її параметру
 
-type GetType<T> = T extends (param: infer U) => infer Return ? Return : never ? U :undefined;
+// type GetType<T> = T extends (param: infer U) => infer Return ? Return : never
+// type GetType<T> = T extends (param: infer U) => void ? U : T extends (param: infer U) => infer Return ? Return : never;
+type GetType<T> = T extends (param: infer U) => infer R ? [R, U] : never;
+
+function funcB(param: string): number {
+  return 123;
+}
+
+let a: GetType<typeof funcB>; //[number,string]
