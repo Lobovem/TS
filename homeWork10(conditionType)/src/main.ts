@@ -21,10 +21,10 @@ let numValue2: GetNumType = getSum(2, 2);
 
 // type GetType<T> = T extends (param: infer U) => infer Return ? Return : never
 // type GetType<T> = T extends (param: infer U) => void ? U : T extends (param: infer U) => infer Return ? Return : never;
-type GetType<T> = T extends (param: infer U) => infer R ? [R, U] : never;
+type GetType<T> = T extends (param: infer ParamType) => infer ReturnType ? [ReturnType, ParamType] : never;
 
 function funcB(param: string): number {
-  return 123;
+  return +param;
 }
 
-let a: GetType<typeof funcB>; //[number,string]
+type Cortage = GetType<typeof funcB>; //[number,string]
