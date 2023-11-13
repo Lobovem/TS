@@ -14,18 +14,17 @@ type PalindromRes = {
 };
 
 const isPalindrom = (num: number, steps: number = 0): PalindromRes => {
-  const reverce = (num: number): number => {
+  const reverceNumber = (num: number): number => {
     return +num.toString().split('').reverse().join('');
   };
 
-  let reverseNum: number = reverce(num);
-  let sum: number = num + reverseNum;
+  let sumNum: number = num + reverceNumber(num);
 
-  if (sum === reverce(sum)) {
+  if (sumNum === reverceNumber(sumNum)) {
     steps += 1;
-    return { result: sum, steps: steps };
+    return { result: sumNum, steps: steps };
   } else {
-    return isPalindrom(sum, steps + 1);
+    return isPalindrom(sumNum, steps + 1);
   }
 };
 
