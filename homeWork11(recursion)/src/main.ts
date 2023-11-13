@@ -6,26 +6,31 @@
 Іноді достатньо зробити всього один крок (наприклад, 312 + 213 = 525), але, як правило, потрібно не менше двох. 
 Скажімо, число 96 породжує паліндром 4884 тільки на четвертому кроці.... 
 Вам потрібно написати функцію, яка повертатиме об'єкт, де буде властивість result і це буде паліндром,
-і властивість steps— це число викликів до знаходження паліндрома. Для того, щоб перевірити себе використовуйте число 196.
+і властивість steps — це число викликів до знаходження паліндрома. Для того, щоб перевірити себе використовуйте число 196.
 Це так зване Lychrel number — число яке немає поліндрому*/
-function palindrom(num: number) {
-  // if (typeof num === 'number') {
-  function reverce(num: number) {
+type PalindromRes = {
+  result: number;
+  steps: number;
+};
+
+const isPalindrom = (num: number, steps: number = 0): PalindromRes => {
+  const reverce = (num: number): number => {
     return +num.toString().split('').reverse().join('');
-  }
+  };
 
   let reverseNum: number = reverce(num);
-  let sum = num + reverseNum;
+  let sum: number = num + reverseNum;
 
   if (sum === reverce(sum)) {
-    console.log(true);
+    steps += 1;
+    return { result: sum, steps: steps };
   } else {
-    console.log(false);
+    return isPalindrom(sum, steps + 1);
   }
-}
-// }
+};
 
-palindrom(96);
+console.log(isPalindrom(96));
+console.log(isPalindrom(312));
 
 /*Напишіть функцію, яка приймає масив унікальних елементів і генерує всі можливі перестановки 
 цього масиву. Використовуйте рекурсію для знаходження всіх перестановок. Наприклад, якщо вхідний 
