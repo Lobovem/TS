@@ -13,6 +13,21 @@ type PalindromRes = {
   steps: number;
 };
 
+// const isPalindrom = (num: number, steps: number = 0): PalindromRes => {
+//   const reverceNumber = (num: number): number => {
+//     return +num.toString().split('').reverse().join('');
+//   };
+
+//   let sumNum: number = num + reverceNumber(num);
+
+//   if (sumNum === reverceNumber(sumNum)) {
+//     steps += 1;
+//     return { result: sumNum, steps: steps };
+//   } else {
+//     return isPalindrom(sumNum, steps + 1);
+//   }
+// };
+
 const isPalindrom = (num: number, steps: number = 0): PalindromRes => {
   const reverceNumber = (num: number): number => {
     return +num.toString().split('').reverse().join('');
@@ -20,12 +35,12 @@ const isPalindrom = (num: number, steps: number = 0): PalindromRes => {
 
   let sumNum: number = num + reverceNumber(num);
 
-  if (sumNum === reverceNumber(sumNum)) {
-    steps += 1;
-    return { result: sumNum, steps: steps };
-  } else {
+  while (!(sumNum === reverceNumber(sumNum))) {
     return isPalindrom(sumNum, steps + 1);
   }
+
+  steps += 1;
+  return { result: sumNum, steps: steps };
 };
 
 console.log(isPalindrom(96));
