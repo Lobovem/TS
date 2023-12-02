@@ -1,0 +1,2 @@
+That don't do:
+- if the first component open a modal window, the second component does redirect, then the first component should not edit function of the second component
